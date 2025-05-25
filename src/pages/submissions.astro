@@ -1,0 +1,140 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Submit Your Work | ${SITE_TITLE}`} description="Submit your articles and essays for publication." />
+		<link href="https://fonts.googleapis.com/css2?family=Caudex:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+		<style>
+			.hero-header {
+					position: relative;
+					padding: 6rem 1rem 4rem;
+					text-align: center;
+					background-image: url('public/2019_01_15_14-32-24_Monument_DP_0064.jpg');
+					background-size: cover;
+					background-position: center;
+					color: var(--white);
+					margin-bottom: 2rem;
+					overflow: hidden;
+				}
+			
+			.hero-header::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-color: rgba(0, 0, 0, 0.5);
+				z-index: 1;
+			}
+			.hero-content {
+				position: relative;
+				z-index: 2;
+				max-width: 800px;
+				margin: 0 auto;
+			}
+			
+			.hero-header h1 {
+				color: #ffffff; 
+				margin: 0 0 1.5rem;
+				font-size: 3rem;
+				text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
+				font-weight: 700; 
+			}
+
+			.blog-intro p {
+				color: #ffffff;
+				font-size: 1.2rem;
+				text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+				max-width: 600px;
+				margin: 0 auto;
+			}
+
+			.submission-button {
+				display: inline-block;
+				background-color: var(--accent);
+				color: var(--white);
+				font-size: 1.2rem;
+				font-weight: 700;
+				padding: 1rem 2rem;
+				border-radius: 4px;
+				text-decoration: none;
+				transition: background-color 0.3s ease;
+				margin: 2rem 0;
+			}
+
+			.submission-button:hover {
+				background-color: var(--accent-dark);
+			}
+
+			.external-submission {
+				text-align: center;
+				padding: 2rem;
+				background-color: var(--bg-alt);
+				border-radius: 8px;
+				max-width: 800px;
+				margin: 0 auto 2rem;
+			}
+
+			.external-submission p {
+				margin-bottom: 1.5rem;
+			}
+			
+			.page-header {
+				margin-bottom: 2rem;
+			}
+			
+			.header-decoration {
+				width: 80px;
+				height: 4px;
+				background-color: var(--accent);
+				margin: 1rem 0 2rem;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<div class="hero-header">
+			<div class="hero-content">
+				<h1>Submit to the YUJR</h1>
+				<div class="blog-intro">
+					<p>
+						We're always looking to publish work by undergraduate researchers, whether from Yale or not!
+					</p>
+				</div>
+			</div>
+		</div>
+		<main id="content" class="content-container">
+			<section class="submission-info">
+				<h2>Submission Guidelines</h2>
+				<div class="guidelines-content">
+					<p>We welcome submissions in the following categories:</p>
+					<ul>
+						<li><strong>Blog Articles:</strong> Description! </li>
+						<li><strong>Journal Essays:</strong> Description!</li>
+		
+					</ul>
+					<p>We follow XYZ style, using ABCDEF citations. [Fill in!]</p>
+				</div>
+			</section>
+			<section class="contact-info">
+				<h2>Questions?</h2>
+				<p>If you have any questions about submitting your work, feel free to contact our editorial team at <a href="mailto:editors@journal.com">editors@journal.com</a>.</p>
+			</section>
+			
+			<section class="external-submission" >
+				<a href="" class="button" >Submit today!</a>
+			</section>
+			
+			
+		</main>
+		
+		<Footer />
+	</body>
+</html>

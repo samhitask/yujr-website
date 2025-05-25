@@ -1,0 +1,241 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+const posts = (await getCollection('articles')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Caudex:wght@400;700&family=Lato:wght@400;700&display=swap');
+
+			:root {
+				--navy: rgb(11, 23, 63);
+				--white: #ffffff;
+				--cream: #f8f5e9;
+				--text-dark: #333333;
+				--accent-blue: #0077cc;
+			}
+
+			body {
+				font-family: 'Lato', sans-serif;
+				background-color: var(--cream);
+				color: var(--text-dark);
+				margin: 0;
+				padding: 0;
+				height: 100%;
+			}
+
+			h1, h2 {
+				font-family: 'Caudex', serif;
+				color: var(--navy);
+			}
+
+			a {
+				color: var(--accent-blue);
+				text-decoration: none;
+				font-weight: bold;
+			}
+
+			a:hover {
+				text-decoration: underline;
+			}
+
+			.container {
+				max-width: 960px;
+				margin: 2rem auto;
+				padding: 0 1rem;
+				position: relative;
+			}
+
+			.hero-header {
+				position: relative;
+				padding: 6rem 1rem 4rem;
+				text-align: center;
+				background-image: url('public/matthew-mcbrayer-qD9xzm7yK9U-unsplash.jpg');
+				background-size: cover;
+				background-position: center;
+				color: var(--white);
+				margin-bottom: 2rem;
+				overflow: hidden;
+			}
+			
+
+			.hero-header::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(11, 23, 63, 0.7);
+				z-index: 1;
+			}
+			
+			.hero-content {
+				position: relative;
+				z-index: 2;
+				max-width: 800px;
+				margin: 0 auto;
+			}
+			
+			.hero-header h1 {
+				color: var(--white);
+				margin: 0 0 1.5rem;
+				font-size: 3rem;
+				text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+			}
+			
+			.blog-intro {
+				font-size: 1.2rem;
+				color: var(--white);
+				line-height: 1.6;
+				margin: 1.5rem 0;
+				max-width: 80%;
+				margin: 0 auto;
+			}
+			
+			.blog-intro p {
+				margin: 0;
+				font-weight: 500;
+				text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+			}
+
+			.articles-section {
+				margin-top: 1rem;
+			}
+			
+			.articles-section h1 {
+				color: var(--navy);
+			}
+
+			.articles-list {
+				display: grid;
+				grid-template-columns: 1fr;
+				gap: 1.5rem;
+				list-style: none;
+				padding: 0;
+			}
+
+			.article-card {
+				background: var(--white);
+				color: var(--text-dark);
+				padding: 1.5rem;
+				border-radius: 10px;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+				width: 100%;
+			}
+
+			.article-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+			}
+
+			.article-card img {
+				width: 100%;
+				height: 200px;
+				object-fit: cover;
+				border-radius: 8px;
+				margin-bottom: 1rem;
+			}
+
+			.article-title {
+				font-size: 1.5rem;
+				margin: 0;
+				font-weight: bold;
+				color: var(--navy);
+			}
+
+			.meta {
+				font-size: 0.9rem;
+				color: var(--text-dark);
+				margin-bottom: 0.5rem;
+			}
+
+			.description {
+				font-size: 1rem;
+				line-height: 1.6;
+				color: var(--text-dark);
+			}
+
+			.read-more {
+				display: inline-block;
+				margin-top: 1rem;
+				font-size: 1rem;
+				color: var(--accent-blue);
+				text-decoration: none;
+				font-weight: bold;
+			}
+
+			.read-more:hover {
+				text-decoration: underline;
+			}
+
+			@media (max-width: 720px) {
+				.hero-header {
+					padding: 4rem 1rem 3rem;
+				}
+				
+				.hero-header h1 {
+					font-size: 2.5rem;
+				}
+				
+				.blog-intro {
+					font-size: 1.1rem;
+					max-width: 100%;
+				}
+
+				.container {
+					padding: 1rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		
+		<div class="hero-header">
+			<div class="hero-content">
+				<h1>YUJR Blog</h1>
+				<div class="blog-intro">
+					<p>
+						The Blog publishes short weekly articles focusing on specific religious issues. 
+					</p>
+				</div>
+			</div>
+		</div>
+		
+		<main class="container">
+			<!-- Articles Section -->
+			<section class="articles-section">
+				<h1>Latest Articles</h1>
+				<ul class="articles-list">
+					{posts.map((post) => (
+						<li class="article-card">
+							<a href={`/articles/${post.id}/`}>
+								<img src={post.data.heroImage} alt={post.data.title} />
+								<h2 class="article-title">{post.data.title}</h2>
+							</a>
+							<p class="meta">
+								By <strong>{post.data.author}</strong> • <FormattedDate date={post.data.pubDate} />
+							</p>
+							<p class="description">{post.data.description}</p>
+							<a href={`/articles/${post.id}/`} class="read-more">Read More →</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
