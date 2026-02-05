@@ -1,9 +1,8 @@
 backend:
-  name: github
+  name: git-gateway
   repo: samhitask/yujr-website 
   branch: master 
 
-local_backend: true # Enable this for local testing
 
 media_folder: "public/images/uploads" # Where uploaded images are stored
 public_folder: "/images/uploads" # Public URL for images
