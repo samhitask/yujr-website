@@ -3,10 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "tinacms dev -c \"astro dev\"",
+    "build": "tinacms build && astro build",
+    "preview": "astro preview"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.1.0",
@@ -14,6 +13,11 @@
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/vercel": "^8.1.4",
     "astro": "^5.4.2",
-    "netlify": "^23.12.3"
+    "netlify": "^23.12.3",
+    "tinacms": "^3.4.1"
+  },
+  "devDependencies": {
+    "@tinacms/cli": "^2.1.5",
+    "@types/node": "^25.2.0"
   }
 }
