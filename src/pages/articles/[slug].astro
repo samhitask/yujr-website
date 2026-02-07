@@ -1,21 +1,71 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
+import { client, urlFor } from '../../lib/sanity';
+import { PortableText } from '@portabletext/react';
 import BlogPost from '../../layouts/BlogPost.astro';
-import { render } from 'astro:content';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('articles');
-	return posts.map((post) => ({
-		params: { slug: post.slug },  // Changed from post.id to post.slug
-		props: post,
-	}));
+  const articles = await client.fetch(`
+    *[_type == "article" && draft != true] {
+      "slug": slug.current
+    }
+  `);
+  
+  return articles.map((article) => ({
+    params: { slug: article.slug }
+  }));
 }
-type Props = CollectionEntry<'articles'>;
 
-const post = Astro.props;
-const { Content } = await render(post);
+const { slug } = Astro.params;
+
+const article = await client.fetch(`
+  *[_type == "article" && slug.current == $slug][0] {
+    title,
+    description,
+    author,
+    pubDate,
+    image,
+    tags,
+    body
+  }
+`, { slug });
+
+const imageUrl = article.image ? urlFor(article.image).url() : null;
 ---
 
-<BlogPost {...post.data}>
-	<Content />
+<BlogPost 
+  title={article.title}
+  description={article.description}
+  pubDate={new Date(article.pubDate)}
+  author={article.author}
+  image={imageUrl}
+>
+  <div class="article-content">
+    <!-- For now, we'll use a simple portable text renderer -->
+    {article.body.map((block) => {
+      if (block._type === 'block') {
+        return <p>{block.children.map(child => child.text).join('')}</p>
+      }
+      if (block._type === 'image') {
+        return <img src={urlFor(block).url()} alt={block.alt || ''} />
+      }
+    })}
+  </div>
 </BlogPost>
+
+<style>
+  .article-content {
+    max-width: 65ch;
+    margin: 0 auto;
+  }
+  
+  .article-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 2rem 0;
+  }
+  
+  .article-content p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+</style>
