@@ -1,218 +1,254 @@
 ---
-import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 
-type Props = CollectionEntry<'articles'>['data'];
+interface Props {
+  title: string;
+  description?: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  image?: string;
+  author?: string;
+}
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, image, author } = Astro.props;
 ---
 
 <html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
-		<style is:global>
-			:root {
-				--font-body: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-				--font-heading: 'Caudex', Georgia, serif;
-			}
-			
-			html, body {
-				font-family: var(--font-body);
-			}
-			
-			h1, h2, h3, h4, h5, h6 {
-				font-family: var(--font-heading);
-			}
-		</style>
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-				font-family: var(--font-body);
-			}
-			
-			.hero-image {
-				width: 100%;
-				max-width: 1200px;
-				margin: 0 auto;
-				padding: 2rem 1rem 0;
-			}
-			
-			.hero-image img {
-				display: block;
-				width: 100%;
-				height: auto;
-				border-radius: 16px;
-				box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-			}
-			
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 2em 1em;
-				color: #1f2937;
-				font-family: var(--font-body);
-			}
-			
-			.prose :global(p) {
-				font-family: var(--font-body);
-				line-height: 1.75;
-				margin-bottom: 1.5em;
-				color: #374151;
-				font-size: 1.0625rem;
-			}
-			
-			.prose :global(h2),
-			.prose :global(h3),
-			.prose :global(h4) {
-				font-family: var(--font-heading);
-				font-weight: 700;
-				color: #111827;
-				margin-top: 2em;
-				margin-bottom: 1em;
-				line-height: 1.3;
-			}
-			
-			.prose :global(h2) {
-				font-size: 1.875rem;
-			}
-			
-			.prose :global(h3) {
-				font-size: 1.5rem;
-			}
-			
-			.prose :global(a) {
-				color: #c74a00;
-				text-decoration: none;
-				border-bottom: 1px solid #c74a0050;
-				transition: all 0.2s ease;
-			}
-			
-			.prose :global(a:hover) {
-				color: #a03d00;
-				border-bottom-color: #a03d00;
-			}
-			
-			.prose :global(code) {
-				font-family: 'Monaco', 'Courier New', monospace;
-				background: #f3f4f6;
-				padding: 0.2em 0.4em;
-				border-radius: 4px;
-				font-size: 0.9em;
-				color: #be185d;
-			}
-			
-			.prose :global(pre) {
-				background: #1f2937;
-				padding: 1.5em;
-				border-radius: 8px;
-				overflow-x: auto;
-				margin: 2em 0;
-			}
-			
-			.prose :global(pre code) {
-				background: transparent;
-				color: #e5e7eb;
-				padding: 0;
-			}
-			
-			.prose :global(blockquote) {
-				border-left: 4px solid #c74a00;
-				padding-left: 1.5em;
-				margin-left: 0;
-				font-style: italic;
-				color: #4b5563;
-				font-family: var(--font-body);
-			}
-			
-			.prose :global(ul),
-			.prose :global(ol) {
-				font-family: var(--font-body);
-				line-height: 1.75;
-				color: #374151;
-			}
-			
-			.title {
-				margin-bottom: 2em;
-				padding: 1em 0;
-				text-align: center;
-			}
-			
-			.title h1 {
-				margin: 0 0 0.5em 0;
-				font-size: 2.5rem;
-				font-weight: 700;
-				line-height: 1.2;
-				color: #111827;
-				font-family: var(--font-heading);
-			}
-			
-			@media (min-width: 768px) {
-				.title h1 {
-					font-size: 3rem;
-				}
-			}
-			
-			.date {
-				margin-bottom: 1em;
-				color: #6b7280;
-				font-size: 0.9375rem;
-				font-weight: 700;
-				font-family: var(--font-body);
-			}
-			
-			.last-updated-on {
-				font-style: italic;
-				color: #9ca3af;
-				margin-top: 0.5em;
-				font-size: 0.875rem;
-				font-family: var(--font-body);
-			}
-			
-			.title hr {
-				margin: 2em auto;
-				max-width: 100px;
-				border: none;
-				border-top: 3px solid #c74a00;
-				opacity: 0.3;
-			}
-		</style>
-	</head>
+  <head>
+    <BaseHead title={title} description={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    <style is:global>
+      :root {
+        --font-body: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --font-heading: 'Caudex', Georgia, serif;
+      }
+      
+      html, body {
+        font-family: var(--font-body);
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading);
+      }
+    </style>
+    <style>
+      main {
+        width: calc(100% - 2em);
+        max-width: 100%;
+        margin: 0;
+        font-family: var(--font-body);
+      }
+      
+      .hero-image {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem 0;
+      }
+      
+      .hero-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      }
+      
+      .prose {
+        width: 720px;
+        max-width: calc(100% - 2em);
+        margin: auto;
+        padding: 2em 1em;
+        color: #1f2937;
+        font-family: var(--font-body);
+      }
+      
+      .prose :global(p) {
+        font-family: var(--font-body);
+        line-height: 1.75;
+        margin-bottom: 1.5em;
+        color: #374151;
+        font-size: 1.0625rem;
+      }
+      
+      .prose :global(h2),
+      .prose :global(h3),
+      .prose :global(h4) {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        color: #111827;
+        margin-top: 2em;
+        margin-bottom: 1em;
+        line-height: 1.3;
+      }
+      
+      .prose :global(h2) {
+        font-size: 1.875rem;
+      }
+      
+      .prose :global(h3) {
+        font-size: 1.5rem;
+      }
+      
+      .prose :global(a) {
+        color: #c74a00;
+        text-decoration: none;
+        border-bottom: 1px solid #c74a0050;
+        transition: all 0.2s ease;
+      }
+      
+      .prose :global(a:hover) {
+        color: #a03d00;
+        border-bottom-color: #a03d00;
+      }
+      
+      .prose :global(code) {
+        font-family: 'Monaco', 'Courier New', monospace;
+        background: #f3f4f6;
+        padding: 0.2em 0.4em;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #be185d;
+      }
+      
+      .prose :global(pre) {
+        background: #1f2937;
+        padding: 1.5em;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 2em 0;
+      }
+      
+      .prose :global(pre code) {
+        background: transparent;
+        color: #e5e7eb;
+        padding: 0;
+      }
+      
+      .prose :global(blockquote) {
+        border-left: 4px solid #c74a00;
+        padding-left: 1.5em;
+        margin-left: 0;
+        font-style: italic;
+        color: #4b5563;
+        font-family: var(--font-body);
+      }
+      
+      .prose :global(ul),
+      .prose :global(ol) {
+        font-family: var(--font-body);
+        line-height: 1.75;
+        color: #374151;
+      }
+      
+      .title {
+        margin-bottom: 2em;
+        padding: 1em 0;
+        text-align: center;
+      }
+      
+      .title h1 {
+        margin: 0 0 0.5em 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #111827;
+        font-family: var(--font-heading);
+      }
+      
+      @media (min-width: 768px) {
+        .title h1 {
+          font-size: 3rem;
+        }
+      }
+      
+      .article-meta {
+        margin-bottom: 1em;
+        color: #6b7280;
+        font-size: 0.9375rem;
+        font-family: var(--font-body);
+      }
+      
+      .author-link {
+        font-weight: 700;
+        color: #374151;
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: all 0.2s ease;
+      }
+      
+      .author-link:hover {
+        color: #c74a00;
+        border-bottom-color: #c74a00;
+      }
+      
+      .meta-separator {
+        margin: 0 0.5rem;
+      }
+      
+      .date {
+        font-style: italic;
+      }
+      
+      .last-updated-on {
+        font-style: italic;
+        color: #9ca3af;
+        margin-top: 0.5em;
+        font-size: 0.875rem;
+        font-family: var(--font-body);
+      }
+      
+      .title hr {
+        margin: 2em auto;
+        max-width: 100px;
+        border: none;
+        border-top: 3px solid #c74a00;
+        opacity: 0.3;
+      }
+    </style>
+  </head>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+  <body>
+    <Header />
+    <main>
+      <article>
+        <div class="hero-image">
+          {image && <img width={1020} height={510} src={image} alt="" />}
+        </div>
+        <div class="prose">
+          <div class="title">
+            <div class="article-meta">
+              {author && (
+                <>
+                  <a href={`/articles?author=${encodeURIComponent(author)}`} class="author-link">
+                    {author}
+                  </a>
+                  <span class="meta-separator">·</span>
+                </>
+              )}
+              <span class="date">
+                <FormattedDate date={pubDate} />
+              </span>
+              {updatedDate && (
+                <div class="last-updated-on">
+                  Last updated on <FormattedDate date={updatedDate} />
+                </div>
+              )}
+            </div>
+            <h1>{title}</h1>
+            <hr />
+          </div>
+          
+          {/* This slot is where content from [slug].astro gets inserted */}
+          <slot />
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
 </html>

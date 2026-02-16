@@ -1,4 +1,5 @@
-import {defineField, defineType} from 'sanity'
+import { defineType, defineField } from 'sanity'
+import { DocumentTextIcon } from '@sanity/icons'
 
 export default defineType({
   name: 'article',
@@ -9,7 +10,7 @@ export default defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
+      validation: Rule => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -19,45 +20,33 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'text',
-      validation: (Rule) => Rule.required(),
+      validation: Rule => Rule.required(),
     }),
     defineField({
       name: 'author',
       title: 'Author',
       type: 'string',
-      initialValue: 'Anonymous',
     }),
     defineField({
       name: 'pubDate',
-      title: 'Publish Date',
+      title: 'Publication Date',
       type: 'datetime',
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'image',
-      title: 'Featured Image',
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+    }),
+    defineField({
+      name: 'heroImage',
+      title: 'Hero Image',
       type: 'image',
-      options: {
-        hotspot: true,
-      },
     }),
     defineField({
       name: 'tags',
       title: 'Tags',
       type: 'array',
-      of: [{type: 'string'}],
-    }),
-    defineField({
-      name: 'draft',
-      title: 'Draft',
-      type: 'boolean',
-      initialValue: false,
+      of: [{ type: 'string' }],
     }),
     defineField({
       name: 'body',
@@ -66,25 +55,54 @@ export default defineType({
       of: [
         {
           type: 'block',
+          marks: {
+            annotations: [
+              {
+                name: 'footnote',
+                type: 'object',
+                title: 'Footnote',
+                icon: DocumentTextIcon, 
+                fields: [
+                  {
+                    name: 'note',
+                    type: 'text',
+                    title: 'Footnote content',
+                    description: 'The text that will appear in the footnote',
+                  },
+                ],
+              },
+              {
+                name: 'link',
+                type: 'object',
+                title: 'External link',
+                fields: [
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                  },
+                ],
+              },
+            ],
+          },
         },
         {
           type: 'image',
-          options: {
-            hotspot: true,
-          },
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alternative text',
+            },
+            {
+              name: 'caption',
+              type: 'string',
+              title: 'Caption',
+            },
+          ],
         },
       ],
     }),
   ],
-  preview: {
-    select: {
-      title: 'title',
-      author: 'author',
-      media: 'image',
-    },
-    prepare(selection) {
-      const {author} = selection
-      return {...selection, subtitle: author && `by ${author}`}
-    },
-  },
 })

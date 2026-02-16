@@ -3,12 +3,21 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { getCollection } from 'astro:content';
+import { client } from '../lib/sanity';
 
-// Get the 4 most recent blog posts
-const posts = (await getCollection('articles'))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 4);
+// Get the 4 most recent articles from Sanity
+const posts = await client.fetch(`
+  *[_type == "article" && draft != true] | order(pubDate desc)[0...4] {
+    _id,
+    title,
+    "slug": slug.current,
+    description,
+    author,
+    pubDate,
+    image,
+    tags
+  }
+`);
 ---
 
 <!doctype html>
@@ -107,15 +116,6 @@ const posts = (await getCollection('articles'))
 			margin-bottom: 3rem;
 			text-align: center;
 			position: relative;
-		}
-
-		.blog-section h2::after {
-			content: '';
-			display: block;
-			width: 60px;
-			height: 4px;
-			background-color: var(--accent);
-			margin: 1rem auto 0;
 		}
 
 		.post-grid {
@@ -371,7 +371,7 @@ const posts = (await getCollection('articles'))
 				<h2>Latest Articles</h2>
 				<div class="post-grid">
 					{posts.map((post, index) => {
-						const date = new Date(post.data.pubDate);
+						const date = new Date(post.pubDate);
 						const month = date.toLocaleDateString('en-US', { month: 'short' });
 						const day = date.getDate();
 						const year = date.getFullYear();
@@ -389,10 +389,10 @@ const posts = (await getCollection('articles'))
 								<div class="post-content">
 									{index === 0 && <span class="featured-badge">Featured</span>}
 									<h3 class="post-title">
-										<a href={`/articles/${post.slug}/`}>{post.data.title}</a>
+										<a href={`/articles/${post.slug}/`}>{post.title}</a>
 									</h3>
-									<p class="post-date">{post.data.author}</p>
-									<p class="post-excerpt">{post.data.description}</p>
+									<p class="post-date">{post.author}</p>
+									<p class="post-excerpt">{post.description}</p>
 									<a href={`/articles/${post.slug}/`} class="read-more">Read Article →</a>
 								</div>
 							</article>

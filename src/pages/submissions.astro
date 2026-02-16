@@ -9,132 +9,442 @@ import { SITE_TITLE } from '../consts';
 <html lang="en">
 	<head>
 		<BaseHead title={`Submit Your Work | ${SITE_TITLE}`} description="Submit your articles and essays for publication." />
-		<link href="https://fonts.googleapis.com/css2?family=Caudex:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
 		<style>
-			.hero-header {
-					position: relative;
-					padding: 6rem 1rem 4rem;
-					text-align: center;
-					background-image: url('/images/uploads/2019_01_15_14-32-24_Monument_DP_0064.jpg');
-					background-size: cover;
-					background-position: center;
-					color: var(--white);
-					margin-bottom: 2rem;
-					overflow: hidden;
-				}
-			
-			.hero-header::before {
-				content: '';
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				background-color: rgba(0, 0, 0, 0.5);
-				z-index: 1;
+			:root {
+				--accent: #c74a00;
+				--accent-rgb: 199, 74, 0;
+				--text-heading: #1a1a1a;
+				--text: #333333;
+				--text-muted: #666666;
+				--border-color: #e0e0e0;
+				--white: #ffffff;
+				--background-light: #fafafa;
 			}
-			.hero-content {
-				position: relative;
-				z-index: 2;
-				max-width: 800px;
-				margin: 0 auto;
+			
+			* {
+				box-sizing: border-box;
+			}
+			
+			body {
+				font-family: 'Lato', sans-serif;
+				margin: 0;
+				padding: 0;
+				background-color: var(--white);
+				color: var(--text);
+			}
+			
+			/* Hero section */
+			.hero-header {
+				padding: 5rem 2rem 3rem;
+				text-align: center;
+				border-bottom: 1px solid var(--border-color);
+				background-color: var(--white);
 			}
 			
 			.hero-header h1 {
-				color: #ffffff; 
-				margin: 0 0 1.5rem;
+				font-family: 'Caudex', Georgia, serif;
+				color: var(--text-heading);
+				margin: 0 0 0.5rem 0;
 				font-size: 3rem;
-				text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
-				font-weight: 700; 
-			}
-
-			.blog-intro p {
-				color: #ffffff;
-				font-size: 1.2rem;
-				text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-				max-width: 600px;
-				margin: 0 auto;
-			}
-
-	.button {
-				display: inline-block;
-				background-color: #1e3a8a;
-				color: var(--white, #ffffff);
-				font-size: 1.2rem;
-				font-family: 'Lato', sans-serif;
 				font-weight: 700;
-				padding: 1rem 2rem;
+				letter-spacing: -0.02em;
+			}
+			
+			.hero-subtitle {
+				font-family: 'Lato', sans-serif;
+				font-size: 1rem;
+				color: var(--text-muted);
+				font-weight: 300;
+				letter-spacing: 0.03em;
+			}
+			
+			@media (min-width: 768px) {
+				.hero-header {
+					padding: 6rem 2rem 4rem;
+				}
+				
+				.hero-header h1 {
+					font-size: 4rem;
+				}
+			}
+			
+			.content-container {
+				max-width: 800px;
+				width: 100%;
+				margin: 0 auto;
+				padding: 0 clamp(1.5rem, 5vw, 2rem);
+			}
+			
+			.section {
+				padding: 3rem 0;
+				border-bottom: 1px solid var(--border-color);
+			}
+			
+			.section:first-of-type {
+				padding-top: 4rem;
+			}
+			
+			.section:last-of-type {
+				border-bottom: none;
+			}
+			
+			.section h2 {
+				font-family: 'Caudex', Georgia, serif;
+				font-size: 2rem;
+				font-weight: 700;
+				line-height: 1.3;
+				color: var(--text-heading);
+				margin: 0 0 1.5rem 0;
+				letter-spacing: -0.01em;
+			}
+			
+			.section h3 {
+				font-family: 'Caudex', Georgia, serif;
+				font-size: 1.5rem;
+				font-weight: 700;
+				line-height: 1.3;
+				color: var(--text-heading);
+				margin: 2rem 0 1rem 0;
+				letter-spacing: -0.01em;
+			}
+			
+			.section p,
+			.section li {
+				font-family: 'Lato', sans-serif;
+				font-size: 1rem;
+				line-height: 1.7;
+				color: var(--text);
+				margin: 0 0 1.5rem 0;
+				font-weight: 300;
+			}
+			
+			.section ul,
+			.section ol {
+				font-family: 'Lato', sans-serif;
+				font-size: 1rem;
+				line-height: 1.7;
+				color: var(--text);
+				margin: 0 0 1.5rem 0;
+				padding-left: 1.5rem;
+				font-weight: 300;
+			}
+			
+			.section li {
+				margin-bottom: 1rem;
+			}
+			
+			.section strong {
+				font-weight: 600;
+				color: var(--text-heading);
+			}
+			
+			.section a {
+				color: var(--accent);
+				text-decoration: none;
+				border-bottom: 1px solid transparent;
+				transition: border-color 0.2s ease;
+			}
+			
+			.section a:hover {
+				border-bottom-color: var(--accent);
+			}
+			
+			/* Rubric table */
+			.rubric-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin: 2rem 0;
+				font-size: 0.95rem;
+			}
+			
+			.rubric-table th,
+			.rubric-table td {
+				border: 1px solid var(--border-color);
+				padding: 1rem;
+				text-align: left;
+				vertical-align: top;
+			}
+			
+			.rubric-table thead th {
+				background-color: var(--background-light);
+				font-family: 'Caudex', Georgia, serif;
+				font-weight: 700;
+				color: var(--text-heading);
+				font-size: 0.9rem;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+			
+			.rubric-table tbody th {
+				font-family: 'Lato', sans-serif;
+				font-weight: 600;
+				color: var(--text-heading);
+				background-color: var(--background-light);
+				width: 30%;
+			}
+			
+			.rubric-table td {
+				font-family: 'Lato', sans-serif;
+				font-weight: 300;
+				line-height: 1.5;
+			}
+			
+			/* Submit button */
+			.submit-section {
+				text-align: center;
+				padding: 4rem 2rem;
+			}
+			
+			.button {
+				display: inline-block;
+				background-color: var(--accent);
+				color: var(--white);
+				font-size: 1.1rem;
+				font-family: 'Caudex', Georgia, serif;
+				font-weight: 700;
+				padding: 1rem 2.5rem;
 				border-radius: 4px;
 				text-decoration: none;
-				transition: all 0.3s ease;
+				transition: all 0.2s ease;
+				letter-spacing: 0.02em;
 			}
 
 			.button:hover {
-				background-color: #1e40af;
+				background-color: #a03d00;
 				transform: translateY(-2px);
-				box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
-			}
-
-			.external-submission {
-				text-align: center;
-				padding: 2rem;
-				border-radius: 8px;
-				max-width: 800px;
-				margin: 0 auto 2rem;
-			}
-
-			.external-submission p {
-				margin-bottom: 1.5rem;
-				font-family: 'Lato', sans-serif;
+				box-shadow: 0 4px 12px rgba(199, 74, 0, 0.25);
 			}
 			
-			.page-header {
+			/* Process steps */
+			.process-step {
 				margin-bottom: 2rem;
 			}
 			
-			.header-decoration {
-				width: 80px;
-				height: 4px;
+			.step-number {
+				display: inline-block;
+				width: 2rem;
+				height: 2rem;
 				background-color: var(--accent);
-				margin: 1rem 0 2rem;
+				color: var(--white);
+				border-radius: 50%;
+				text-align: center;
+				line-height: 2rem;
+				font-weight: 700;
+				margin-right: 1rem;
+				font-size: 0.9rem;
+			}
+			
+			.step-title {
+				font-family: 'Lato', sans-serif;
+				font-weight: 600;
+				color: var(--text-heading);
+				display: inline;
+			}
+			
+			@media (max-width: 768px) {
+				.hero-header {
+					padding: 4rem 1.5rem 2.5rem;
+				}
+				
+				.hero-header h1 {
+					font-size: 2.25rem;
+				}
+				
+				.hero-subtitle {
+					font-size: 0.9rem;
+				}
+				
+				.section {
+					padding: 2.5rem 0;
+				}
+				
+				.section:first-of-type {
+					padding-top: 3rem;
+				}
+				
+				.section h2 {
+					font-size: 1.75rem;
+				}
+				
+				.submit-section {
+					padding: 3rem 1.5rem;
+				}
+				
+				.rubric-table {
+					font-size: 0.85rem;
+				}
+				
+				.rubric-table th,
+				.rubric-table td {
+					padding: 0.75rem;
+				}
 			}
 		</style>
 	</head>
 	<body>
 		<Header />
 		<div class="hero-header">
-			<div class="hero-content">
-				<h1>Submit to the YUJR</h1>
-				<div class="blog-intro">
-					<p>
-						We're always looking to publish work by undergraduate researchers, whether from Yale or not!
-					</p>
-				</div>
-			</div>
+			<h1>Submit to the YUJR</h1>
+			<p class="hero-subtitle">We're always looking to publish work by undergraduate researchers, whether from Yale or not!</p>
 		</div>
 		<main id="content" class="content-container">
-			<section class="submission-info">
-				<h2>Submission Guidelines</h2>
-				<div class="guidelines-content">
-					<p>We welcome submissions in the following categories:</p>
-					<ul>
-						<li><strong>Blog Articles:</strong> Description! </li>
-						<li><strong>Journal Essays:</strong> Description!</li>
-		
-					</ul>
-					<p>We follow XYZ style, using ABCDEF citations. [Fill in!]</p>
+			<!-- Submission Guidelines -->
+			<section class="section">
+			<!-- Review Process -->
+			<section class="section">
+				<h2>Double-Anonymized Peer-Review Process</h2>
+				<p>The Yale Undergraduate Journal of Religion (YUJR) follows a double-anonymized peer-review process, meaning that both reviewers do not know the identity of the authors, and authors do not know the identity of the reviewers. This process ensures fairness, impartiality, and academic integrity in all evaluations.</p>
+				
+				<div class="process-step">
+					<span class="step-number">1</span>
+					<span class="step-title">Submission Preparation</span>
+					<p style="margin-left: 3rem; margin-top: 0.5rem;">Authors submit their work through the YUJR submission portal. All identifying information (e.g., name, email, course details, acknowledgments) must be removed from the submitted manuscript. Submissions that are not properly anonymized will be returned to the author for correction before review.</p>
+				</div>
+				
+				<div class="process-step">
+					<span class="step-number">2</span>
+					<span class="step-title">Editorial Assignment</span>
+					<p style="margin-left: 3rem; margin-top: 0.5rem;">The Managing Editor assigns each submission to an editorial group of 3 to 4 reviewers, selected to ensure a range of academic perspectives. Editors must immediately recuse themselves if they recognize the work (e.g., from class, extracurriculars, or personal relationships).</p>
+				</div>
+				
+				<div class="process-step">
+					<span class="step-number">3</span>
+					<span class="step-title">Individual Preliminary Review</span>
+					<p style="margin-left: 3rem; margin-top: 0.5rem;">Each editor reads the assigned paper independently and scores it using the YUJR standardized rubric, assessing: Thesis clarity and argumentation, Originality and contribution to the field, Source engagement, Logical structure, Writing style, Historical and theological accuracy, Analytical depth and ethical nuance, and Overall impression.</p>
+				</div>
+				
+				<div class="process-step">
+					<span class="step-number">4</span>
+					<span class="step-title">Group Discussion and Consensus</span>
+					<p style="margin-left: 3rem; margin-top: 0.5rem;">The editorial group meets to discuss the submission collaboratively. Reviewers share individual impressions, identify strengths and weaknesses, and refine their assessments. The group works toward a consensus score and a unified set of detailed, constructive feedback.</p>
+				</div>
+				
+				<div class="process-step">
+					<span class="step-number">5</span>
+					<span class="step-title">Feedback Compilation</span>
+					<p style="margin-left: 3rem; margin-top: 0.5rem;">The Lead Editor or Managing Editor compiles the group's notes into a structured editorial report, categorized by rubric sections. Feedback must be professional, specific, and actionable. Editors are encouraged to name strengths as well as areas for revision. The final report and decision (Accept, Revise & Resubmit, or Reject) is sent anonymously to the author.</p>
+				</div>
+				
+				<div class="process-step">
+					<span class="step-number">6</span>
+					<span class="step-title">Revision and Re-Review (if applicable)</span>
+					<p style="margin-left: 3rem; margin-top: 0.5rem;">Authors invited to revise must submit a revised manuscript along with a point-by-point response addressing editorial feedback. The revised submission is reviewed by the same editorial group (when possible), which reassesses the work in light of revisions. A final decision is made and communicated to the author.</p>
+				</div>
+				
+				<div class="process-step">
+					<span class="step-number">7</span>
+					<span class="step-title">Final Approval and Copyediting</span>
+					<p style="margin-left: 3rem; margin-top: 0.5rem;">Accepted papers proceed to a final round of copyediting, where grammar, style, and formatting are polished. Authors are consulted for minor clarifications but remain anonymous until publication.</p>
 				</div>
 			</section>
-			<section class="contact-info">
+
+			<!-- Submit Button (Top) -->
+			<section class="submit-section">
+				<a href="https://docs.google.com/forms/d/e/1FAIpQLScEoSrFKE1XFUtT77GRbL8AGvHJ6y7de4Xci-8xY4o1a1xJnw/viewform?usp=headerE" class="button">Submit Your Work</a>
+			</section>
+
+			<!-- Evaluation Rubric -->
+			<section class="section">
+				<h2>Standardized Rubric for Evaluation</h2>
+				<p>Each paper will be assessed using a numerical rating system (1-10) in the following categories:</p>
+				
+				<table class="rubric-table">
+					<thead>
+						<tr>
+							<th>Criterion</th>
+							<th>Description</th>
+							<th>Score Range (1-10)</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>Thesis Clarity & Argumentation</th>
+							<td>Is the paper's thesis clear, well-defined, and effectively argued?</td>
+							<td>1 (Unclear) - 10 (Exceptionally Clear & Well-Argued)</td>
+						</tr>
+						<tr>
+							<th>Originality & Contribution</th>
+							<td>Does the paper contribute a fresh perspective or novel argument to the field of religious studies?</td>
+							<td>1 (Unoriginal) - 10 (Highly Original & Significant)</td>
+						</tr>
+						<tr>
+							<th>Engagement with Sources</th>
+							<td>Are sources appropriately integrated, analyzed, and cited?</td>
+							<td>1 (Minimal Use) - 10 (Extensive & Thoughtful Use)</td>
+						</tr>
+						<tr>
+							<th>Logical Structure & Organization</th>
+							<td>Is the argument well-structured, with logical progression and coherence?</td>
+							<td>1 (Disorganized) - 10 (Highly Structured & Logical)</td>
+						</tr>
+						<tr>
+							<th>Writing Style & Clarity</th>
+							<td>Is the writing articulate, precise, and free from major grammatical errors?</td>
+							<td>1 (Difficult to Read) - 10 (Elegant & Concise)</td>
+						</tr>
+						<tr>
+							<th>Theological & Historical Accuracy</th>
+							<td>Does the paper accurately engage with theological concepts and historical contexts?</td>
+							<td>1 (Misinterprets Key Concepts) - 10 (Expertly Handled)</td>
+						</tr>
+						<tr>
+							<th>Ethical & Analytical Depth</th>
+							<td>Does the paper engage deeply with ethical questions and analytical rigor?</td>
+							<td>1 (Shallow Analysis) - 10 (Highly Sophisticated)</td>
+						</tr>
+						<tr>
+							<th>Overall Impression</th>
+							<td>General evaluation of the paper's impact and quality.</td>
+							<td>1 (Needs Significant Work) - 10 (Outstanding & Ready for Publication)</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+
+			<!-- Scoring Process -->
+			<section class="section">
+				<h2>Final Score Calculation & Decision</h2>
+				<p>The average score across all categories determines the paper's overall standing:</p>
+				<ul>
+					<li><strong>80-100:</strong> Strong candidate for publication with minor revisions.</li>
+					<li><strong>60-79:</strong> Requires substantial revisions before reconsideration.</li>
+					<li><strong>Below 60:</strong> Does not meet the standards for publication at this time.</li>
+				</ul>
+				<p>Editors must provide specific feedback for each category, explaining their scores.</p>
+			</section>
+
+			<!-- Reviewer Conduct -->
+			<section class="section">
+				<h2>Reviewer Conduct & Best Practices</h2>
+				<ul>
+					<li>Maintain professionalism and academic integrity in all discussions.</li>
+					<li>Avoid overly harsh or vague criticism—feedback should be specific, actionable, and balanced.</li>
+					<li>Emphasize strengths as well as weaknesses in every review.</li>
+					<li>Ensure adherence to YUJR's ethical guidelines regarding citation practices and academic honesty.</li>
+				</ul>
+				
+				<h2>Key Ethical Guidelines</h2>
+				<ul>
+					<li>All editors must uphold strict confidentiality.</li>
+					<li>Editors must approach each paper with an open mind, and critique ideas — not authors.</li>
+					<li>Conflicts of interest must be disclosed immediately.</li>
+					<li>No reviewer may copy or reuse content from a submission.</li>
+				</ul>
+			</section>
+
+			<!-- Questions -->
+			<section class="section">
 				<h2>Questions?</h2>
-				<p>If you have any questions about submitting your work, feel free to contact our editor in chief at <a href="mailto:owen.hannon@yale.edu">owen.hannon@yale.edu</a>.</p>
+				<p>If you have any questions about submitting your work or the review process, feel free to contact our editor in chief at <a href="mailto:owen.hannon@yale.edu">owen.hannon@yale.edu</a>.</p>
 			</section>
 			
-			<section class="external-submission" >
-				<a href="#" class="button" >Submit today!</a>
+			<!-- Submit Button -->
+			<section class="submit-section">
+				<a href="https://docs.google.com/forms/d/e/1FAIpQLScEoSrFKE1XFUtT77GRbL8AGvHJ6y7de4Xci-8xY4o1a1xJnw/viewform?usp=headerE" class="button">Submit Your Work</a>
 			</section>
-			
-			
 		</main>
 		
 		<Footer />

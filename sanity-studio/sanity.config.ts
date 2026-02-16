@@ -5,7 +5,7 @@ import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
   name: 'default',
-  title: 'Yurj Blog',
+  title: 'YUJR Content Studio',
 
   projectId: 'a46k9yri',
   dataset: 'production',
