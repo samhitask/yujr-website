@@ -4,8 +4,8 @@ import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
-const articles = await client.fetch(`
-  *[_type == "article" && draft != true] | order(pubDate desc) {
+const posts = await client.fetch(`
+  *[_type == "blogPost" && draft != true] | order(pubDate desc) {
     _id,
     title,
     "slug": slug.current,
@@ -20,20 +20,20 @@ const articles = await client.fetch(`
 const url = new URL(Astro.request.url);
 const authorFilter = url.searchParams.get('author');
 
-const filteredArticles = authorFilter
-  ? articles.filter(article => article.author === authorFilter)
-  : articles;
+const filteredPosts = authorFilter
+  ? posts.filter(post => post.author === authorFilter)
+  : posts;
 
-const pageTitle = authorFilter ? `Articles by ${authorFilter}` : 'Articles';
+const pageTitle = authorFilter ? `Blog Posts by ${authorFilter}` : 'Blog';
 const pageSubtitle = authorFilter
-  ? `All articles written by ${authorFilter}`
-  : 'Essays and commentary from the Yale Undergraduate Journal of Religion';
+  ? `All blog posts written by ${authorFilter}`
+  : 'Commentary and perspectives from the Yale Undergraduate Journal of Religion';
 ---
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <BaseHead title="Articles" description="Browse articles from the Yale Undergraduate Journal of Religion" />
+  <BaseHead title="Blog" description="Browse blog posts from the Yale Undergraduate Journal of Religion" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
@@ -58,7 +58,7 @@ const pageSubtitle = authorFilter
       min-height: 480px;
       display: flex;
       align-items: flex-end;
-      background-image: url('/images/uploads/lukas-meier-aAxn9pYE8L0-unsplash.jpg');
+      background-image: url('/images/uploads/ivona-roz--5J-znfFA9w-unsplash.jpg');
       background-size: cover;
       background-position: center;
       overflow: hidden;
@@ -254,61 +254,61 @@ const pageSubtitle = authorFilter
   </div>
 
   <main id="content" class="content-container">
-    {filteredArticles.length === 0 ? (
+    {filteredPosts.length === 0 ? (
       <div class="empty-state">
-        <p>{authorFilter ? `No articles found by ${authorFilter}.` : 'No articles yet. Create your first article in Sanity Studio!'}</p>
+        <p>{authorFilter ? `No blog posts found by ${authorFilter}.` : 'No blog posts yet. Coming soon!'}</p>
         {authorFilter && (
-          <p><a href="/articles" style="color: #c74a00; text-decoration: none; border-bottom: 1px solid #c74a00;">View all articles</a></p>
+          <p><a href="/blog" style="color: #c74a00; text-decoration: none; border-bottom: 1px solid #c74a00;">View all blog posts</a></p>
         )}
       </div>
     ) : (
       <>
-        {filteredArticles.slice(0, 1).map((article) => {
-          const date = new Date(article.pubDate);
+        {filteredPosts.slice(0, 1).map((post) => {
+          const date = new Date(post.pubDate);
           const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
           return (
             <article class="featured-article">
-              <a href={`/articles/${article.slug}`} class="article-link">
+              <a href={`/blog/${post.slug}`} class="article-link">
                 <span class="featured-label">Latest</span>
-                {article.tags && article.tags.length > 0 && <div class="category">{article.tags[0]}</div>}
-                <h2 class="article-title">{article.title}</h2>
+                {post.tags && post.tags.length > 0 && <div class="category">{post.tags[0]}</div>}
+                <h2 class="article-title">{post.title}</h2>
               </a>
               <p class="article-meta">
-                {article.author && (
+                {post.author && (
                   <>
-                    <a href={`/articles?author=${encodeURIComponent(article.author)}`} class="author-link">{article.author}</a>
+                    <a href={`/blog?author=${encodeURIComponent(post.author)}`} class="author-link">{post.author}</a>
                     <span class="meta-separator">·</span>
                   </>
                 )}
                 <span class="pub-date">{formattedDate}</span>
               </p>
-              <a href={`/articles/${article.slug}`} class="article-link">
-                {article.description && <p class="article-description">{article.description}</p>}
+              <a href={`/blog/${post.slug}`} class="article-link">
+                {post.description && <p class="article-description">{post.description}</p>}
               </a>
             </article>
           );
         })}
         <div class="articles-list">
-          {filteredArticles.slice(1).map((article) => {
-            const date = new Date(article.pubDate);
+          {filteredPosts.slice(1).map((post) => {
+            const date = new Date(post.pubDate);
             const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
             return (
               <article class="article-item">
-                <a href={`/articles/${article.slug}`} class="article-link">
-                  {article.tags && article.tags.length > 0 && <div class="category">{article.tags[0]}</div>}
-                  <h3 class="article-title">{article.title}</h3>
+                <a href={`/blog/${post.slug}`} class="article-link">
+                  {post.tags && post.tags.length > 0 && <div class="category">{post.tags[0]}</div>}
+                  <h3 class="article-title">{post.title}</h3>
                 </a>
                 <p class="article-meta">
-                  {article.author && (
+                  {post.author && (
                     <>
-                      <a href={`/articles?author=${encodeURIComponent(article.author)}`} class="author-link">{article.author}</a>
+                      <a href={`/blog?author=${encodeURIComponent(post.author)}`} class="author-link">{post.author}</a>
                       <span class="meta-separator">·</span>
                     </>
                   )}
                   <span class="pub-date">{formattedDate}</span>
                 </p>
-                <a href={`/articles/${article.slug}`} class="article-link">
-                  {article.description && <p class="article-description">{article.description}</p>}
+                <a href={`/blog/${post.slug}`} class="article-link">
+                  {post.description && <p class="article-description">{post.description}</p>}
                 </a>
               </article>
             );

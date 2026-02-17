@@ -1,0 +1,354 @@
+---
+import { client } from '../../lib/sanity';
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const issues = await client.fetch(`
+  *[_type == "issue"] | order(publishedAt desc) {
+    _id,
+    title,
+    volume,
+    issueNumber,
+    publishedAt,
+    "pdfUrl": pdf.asset->url,
+    description
+  }
+`);
+
+const latestIssue = issues[0] ?? null;
+const archiveIssues = issues.slice(1);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <BaseHead title="Issues" description="Read issues of the Yale Undergraduate Journal of Religion" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #c74a00;
+      --text-heading: #1a1a1a;
+      --text: #333333;
+      --text-muted: #666666;
+      --border-color: #e0e0e0;
+      --white: #ffffff;
+      --background-light: #fafafa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--white);
+      color: var(--text);
+    }
+
+    /* ── Hero ── */
+    .hero-header {
+      position: relative;
+      height: 70vh;
+      min-height: 480px;
+      display: flex;
+      align-items: flex-end;
+      background-image: url('/images/uploads/jusdevoyage-oKCoS5zaF-g-unsplash.jpg');
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    .hero-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%);
+      z-index: 1;
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 2;
+      padding: 3rem clamp(2rem, 8vw, 6rem);
+      max-width: 900px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 1rem;
+      display: block;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-header h1 {
+      font-family: 'Caudex', Georgia, serif;
+      font-size: clamp(3.5rem, 8vw, 6rem);
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin: 0;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .hero-rule {
+      width: 60px;
+      height: 3px;
+      background: var(--accent);
+      margin-top: 1.5rem;
+      animation: expandWidth 0.8s ease 0.3s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes expandWidth {
+      from { width: 0; }
+      to   { width: 60px; }
+    }
+
+    /* ── Layout ── */
+    .content-container {
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 clamp(1.5rem, 5vw, 2rem) 4rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 6rem 2rem;
+      color: var(--text-muted);
+      font-size: 1.125rem;
+    }
+
+    /* ── Current issue ── */
+    .current-issue {
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 3rem;
+    }
+
+    .section-label {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .issue-title {
+      font-family: 'Caudex', Georgia, serif;
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin: 0 0 0.5rem 0;
+      letter-spacing: -0.02em;
+    }
+
+    .issue-meta {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0 0 1.5rem 0;
+      font-style: italic;
+    }
+
+    .issue-description {
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text);
+      font-weight: 300;
+      margin: 0 0 2rem 0;
+      max-width: 65ch;
+    }
+
+    /* ── PDF embed ── */
+    .pdf-embed {
+      width: 100%;
+      height: 80vh;
+      min-height: 600px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      display: block;
+    }
+
+    .pdf-fallback {
+      text-align: center;
+      padding: 3rem;
+      background: var(--background-light);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: 'Lato', sans-serif;
+      color: var(--text-muted);
+    }
+
+    .download-link {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+    .download-link:hover { border-bottom-color: var(--accent); }
+
+    /* ── Archive ── */
+    .archive-section h2 {
+      font-family: 'Caudex', Georgia, serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin: 0 0 2rem 0;
+      letter-spacing: -0.01em;
+    }
+
+    .archive-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border-color);
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s ease;
+    }
+    .archive-item:last-child { border-bottom: none; }
+    .archive-item:hover { opacity: 0.75; }
+    .archive-item:hover .archive-item-title { color: var(--accent); }
+
+    .archive-item-title {
+      font-family: 'Caudex', Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin: 0 0 0.25rem 0;
+      transition: color 0.2s ease;
+    }
+
+    .archive-item-meta {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .archive-item-action {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .issue-title { font-size: 1.75rem; }
+      .pdf-embed { height: 60vh; min-height: 400px; }
+      .archive-item { flex-direction: column; gap: 0.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <Header />
+
+  <div class="hero-header">
+    <div class="hero-text">
+      <span class="hero-eyebrow">Yale Undergraduate Journal of Religion</span>
+      <h1>Issues</h1>
+      <div class="hero-rule"></div>
+    </div>
+  </div>
+
+  <main id="content" class="content-container">
+    {!latestIssue ? (
+      <div class="empty-state">
+        <p>No issues published yet. Coming soon!</p>
+      </div>
+    ) : (
+      <>
+        <section class="current-issue">
+          <span class="section-label">Current Issue</span>
+          <h2 class="issue-title">{latestIssue.title}</h2>
+          {latestIssue.publishedAt && (
+            <p class="issue-meta">
+              {latestIssue.volume && `Vol. ${latestIssue.volume}`}
+              {latestIssue.volume && latestIssue.issueNumber && ', '}
+              {latestIssue.issueNumber && `No. ${latestIssue.issueNumber}`}
+              {(latestIssue.volume || latestIssue.issueNumber) && ' · '}
+              {new Date(latestIssue.publishedAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+            </p>
+          )}
+          {latestIssue.description && (
+            <p class="issue-description">{latestIssue.description}</p>
+          )}
+          {latestIssue.pdfUrl ? (
+            <>
+              <iframe
+                class="pdf-embed"
+                src={`${latestIssue.pdfUrl}#toolbar=1&navpanes=0`}
+                title={latestIssue.title}
+              />
+              <p style="margin-top: 0.75rem; font-size: 0.875rem; color: var(--text-muted); font-family: 'Lato', sans-serif;">
+                Can't see the PDF?{' '}
+                <a href={latestIssue.pdfUrl} target="_blank" rel="noopener noreferrer" class="download-link">
+                  Open in a new tab ↗
+                </a>
+              </p>
+            </>
+          ) : (
+            <div class="pdf-fallback">
+              <p>PDF not yet available for this issue.</p>
+            </div>
+          )}
+        </section>
+
+        {archiveIssues.length > 0 && (
+          <section class="archive-section">
+            <h2>Archive</h2>
+            {archiveIssues.map((issue) => (
+              <a
+                href={issue.pdfUrl ?? '#'}
+                target={issue.pdfUrl ? '_blank' : undefined}
+                rel="noopener noreferrer"
+                class="archive-item"
+              >
+                <div>
+                  <p class="archive-item-title">{issue.title}</p>
+                  <p class="archive-item-meta">
+                    {issue.volume && `Vol. ${issue.volume}`}
+                    {issue.volume && issue.issueNumber && ', '}
+                    {issue.issueNumber && `No. ${issue.issueNumber}`}
+                    {(issue.volume || issue.issueNumber) && ' · '}
+                    {issue.publishedAt && new Date(issue.publishedAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </p>
+                </div>
+                {issue.pdfUrl && <span class="archive-item-action">Read PDF ↗</span>}
+              </a>
+            ))}
+          </section>
+        )}
+      </>
+    )}
+  </main>
+
+  <Footer />
+</body>
+</html>

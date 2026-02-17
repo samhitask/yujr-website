@@ -12,263 +12,243 @@ import FormattedDate from '../components/FormattedDate.astro';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <BaseHead title={`About Us | ${SITE_TITLE}`} description="Learn about the Yale Undergraduate Journal of Research team." />
-  <link href="https://fonts.googleapis.com/css2?family=Caudex:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --accent-gradient: linear-gradient(45deg, var(--accent), #da62c4 30%, white 60%);
+      --accent: #c74a00;
+      --accent-rgb: 199, 74, 0;
+      --text-heading: #1a1a1a;
+      --text: #333333;
+      --text-muted: #666666;
+      --border-color: #e0e0e0;
+      --white: #ffffff;
+      --background-light: #fafafa;
     }
-    
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background-color: var(--white);
+      color: var(--text);
+    }
+
+    /* ── Hero ── */
     .hero-header {
       position: relative;
-      padding: 8rem 1rem 6rem;
-      text-align: center;
+      height: 70vh;
+      min-height: 480px;
+      display: flex;
+      align-items: flex-end;
       background-image: url('/images/uploads/guillaume-bleyer-372uM1cIQqE-unsplash.jpg');
       background-size: cover;
       background-position: center;
-      color: var(--white);
-      margin-bottom: 3rem;
       overflow: hidden;
     }
-    
+
     .hero-header::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-	  background-color: rgba(0, 0, 0, 0.5);
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.1) 0%,
+        rgba(0,0,0,0.65) 100%
+      );
       z-index: 1;
     }
-    
-    .hero-header h1 {
+
+    .hero-text {
       position: relative;
       z-index: 2;
-      color: #ffffff;
-      margin: 0;
-      font-size: 4rem;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      animation: fadeIn 1s ease-out;
-    }
-    
-    .container {
+      padding: 3rem clamp(2rem, 8vw, 6rem);
       max-width: 900px;
-      width: 100%;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 1rem;
+      display: block;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-header h1 {
+      font-family: 'Caudex', Georgia, serif;
+      font-size: clamp(3.5rem, 8vw, 6rem);
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .hero-rule {
+      width: 60px;
+      height: 3px;
+      background: var(--accent);
+      margin-top: 1.5rem;
+      animation: expandWidth 0.8s ease 0.3s both;
+    }
+
+    /* ── Main layout ── */
+    .page-body {
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 0 clamp(1rem, 5vw, 2rem);
-      box-sizing: border-box;
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
     }
-    
-    .page-header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    
-    .page-header h1 {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-      color: var(--text-heading);
-    }
-    
-    .header-decoration {
-      width: 120px;
-      height: 4px;
-      background: var(--accent-gradient);
-      margin: 1rem auto 3rem;
-      border-radius: 2px;
-    }
-    
+
+    /* ── Mission ── */
     .mission-section {
-      margin-bottom: 4rem;
-      padding: 2rem;
-      background-color: rgba(var(--accent-rgb), 0.05);
-      border-left: 4px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+      align-items: start;
+      padding: 6rem 0;
+      border-bottom: 1px solid var(--border-color);
     }
-    
-    .mission-title {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      color: var(--text-heading);
-      text-align: center;
-    }
-    
-    .mission-text {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      text-align: justify;
-    }
-    
-    .masthead-container {
-      text-align: center;
-      animation: fadeIn 1s ease-out 0.3s both;
-    }
-    
-    .masthead-title {
-      font-size: 3rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      color: var(--text-heading);
-    }
-    
-    .year {
-      font-size: 1.5rem;
-      margin-bottom: 3rem;
+
+    .mission-label {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
       color: var(--accent);
-      font-weight: 500;
+      padding-top: 0.4rem;
     }
-    
-    .editors-section {
-      margin-bottom: 2.5rem;
-    }
-    
-    .section-title {
-      font-size: 1.5rem;
-      margin-bottom: 0.8rem;
+
+    .mission-section h2 {
+      font-family: 'Caudex', Georgia, serif;
+      font-size: 2.5rem;
+      font-weight: 700;
       color: var(--text-heading);
-      position: relative;
-      display: inline-block;
-    }
-    
-    .section-title::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 40px;
-      height: 2px;
-      background-color: var(--accent);
-    }
-    
-    .editor-name {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-    }
-    
-    .editor-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      margin-bottom: 2.5rem;
-      gap: 2rem;
-    }
-    
-    .editor-column {
-      flex: 1 1 250px;
-      min-width: 200px;
-      text-align: center;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
       margin-bottom: 1.5rem;
-      padding: 1.5rem;
-      background-color: rgba(var(--accent-rgb), 0.03);
-      border-radius: 8px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    
-    .editor-column:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+    .mission-text {
+      font-family: 'Lato', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--text);
+      font-weight: 300;
     }
-    
-    .chiefs-container, .print-editors-container {
+
+    /* ── Masthead ── */
+    .masthead-section {
+      padding: 6rem 0;
+    }
+
+    .masthead-header {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 3rem;
+      align-items: baseline;
+      gap: 2rem;
+      margin-bottom: 4rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
     }
-    
-    .special-role {
-      padding: 1.5rem;
-      background-color: rgba(var(--accent-rgb), 0.05);
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      transition: transform 0.3s ease;
+
+    .masthead-header h2 {
+      font-family: 'Caudex', Georgia, serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -0.03em;
     }
-    
-    .special-role:hover {
-      transform: translateY(-5px);
+
+    .masthead-year {
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
     }
-    
-  
-    
-    @media (max-width: 600px) {
-      .mission-text {
-        text-align: left;
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes expandWidth {
+      from { width: 0; }
+      to   { width: 60px; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .mission-section {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 4rem 0;
       }
-      
-      .hero-header h1 {
-        font-size: 3rem;
+
+      .eic-block {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .eic-name { font-size: 2rem; }
+
+      .masthead-header {
+        flex-direction: column;
+        gap: 0.5rem;
       }
     }
   </style>
 </head>
 <body>
   <Header />
+
   <div class="hero-header">
-    <h1>About Us</h1>
-  </div>
-  
-  <main class="container">
-    
-    <section class="mission-section">
-      <h2 class="mission-title">Our Mission</h2>
-      <p class="mission-text">
-	  The Yale Undergraduate Journal of Religion (YUJR) is a student-run publication dedicated to showcasing excellence in undergraduate research in religious studies. Founded to foster critical inquiry into the wide-ranging practices, ideologies, and societal impacts of religion, YUJR embraces interdisciplinary approaches, including sociology, anthropology, psychology, and history. By publishing thoughtful and innovative scholarship, YUJR provides a platform for students to engage with the academic study of religion, cultivating skills in analytical writing, peer review, and intellectual dialogue. The Journal publishes an annual issue and hosts events to promote engagement with the field of religious studies.
-          </p>
-    </section>
-    
-    <!-- Masthead Section -->
-    <div class="masthead-container">
-      <h1 class="masthead-title">Masthead</h1>
-      <div class="year">2024-25</div>
-      
-      <div class="editors-section">
-        <h2 class="section-title">Editor-in-Chief</h2>
-        <div class="special-role">
-          <p class="editor-name">Owen Hannon</p>
-        </div>
-      </div>
-      
-      <div class="editor-row">
-        <div class="editor-column">
-          <h2 class="section-title">Treasurer</h2>
-          <p class="editor-name">Lucas Ranfranz</p>
-        </div>
-        
-        <div class="editor-column">
-          <h2 class="section-title">Managing Editor</h2>
-          <p class="editor-name">Christopher Kim</p>
-        </div>
-        
-        <div class="editor-column">
-          <h2 class="section-title">Outreach Director</h2>
-          <p class="editor-name">Adam Buchsbaum</p>
-        </div>
-      </div>
-      
-      <div class="editor-row">
-        <div class="editor-column">
-          <h2 class="section-title">Blog Director</h2>
-          <p class="editor-name">Matthew Mendelsohn</p>
-        </div>
-        
-        <div class="editor-column">
-          <h2 class="section-title">Website Designer</h2>
-          <p class="editor-name">Samhita Kumar</p>
-        </div>
-        
-        <div class="editor-column">
-          <h2 class="section-title">Social Media Director</h2>
-          <p class="editor-name">Katie Weinberger</p>
-        </div>
-      </div>
+    <div class="hero-text">
+      <span class="hero-eyebrow">Yale Undergraduate Journal of Religion</span>
+      <h1>About Us</h1>
+      <div class="hero-rule"></div>
     </div>
+  </div>
+
+  <main class="page-body">
+
+    <!-- Mission -->
+    <section class="mission-section">
+      <div>
+        <span class="mission-label">Our Mission</span>
+      </div>
+      <div>
+        <h2>Advancing undergraduate scholarship in religious studies</h2>
+        <p class="mission-text">
+          The Yale Undergraduate Journal of Religion (YUJR) is a student-run publication dedicated to showcasing excellence in undergraduate research in religious studies. Founded to foster critical inquiry into the wide-ranging practices, ideologies, and societal impacts of religion, YUJR embraces interdisciplinary approaches, including sociology, anthropology, psychology, and history. By publishing thoughtful and innovative scholarship, YUJR provides a platform for students to engage with the academic study of religion, cultivating skills in analytical writing, peer review, and intellectual dialogue. The Journal publishes an annual issue and hosts events to promote engagement with the field of religious studies.
+        </p>
+      </div>
+    </section>
+
+    <!-- Masthead -->
+    <section class="masthead-section">
+      <div class="masthead-header">
+        <h2>Masthead</h2>
+        <span class="masthead-year">2025–26</span>
+      </div>
+
+      <div class="editors-list">
+        <p>Owen Hannon, Editor-in-Chief</p>
+        <p>Lucas Ranfranz, Treasurer</p>
+        <p>Christopher Kim, Managing Editor</p>
+        <p>Adam Buchsbaum, Outreach Director</p>
+        <p>Matthew Mendelsohn, Blog Director</p>
+        <p>Samhita Kumar, Website Designer</p>
+      </div>
+    </section>
+
   </main>
-  
+
   <Footer />
 </body>
 </html>

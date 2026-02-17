@@ -1,23 +1,23 @@
 ---
-import { client, urlFor } from '../../lib/sanity';
-import ArticlePost from '../../layouts/ArticlePost.astro';
+import { client, urlFor } from '../../../lib/sanity';
+import ArticlePost from '../../../layouts/ArticlePost.astro';
 
 export async function getStaticPaths() {
-  const articles = await client.fetch(`
-    *[_type == "article" && draft != true] {
+  const posts = await client.fetch(`
+    *[_type == "blogPost" && draft != true] {
       "slug": slug.current
     }
   `);
-  
-  return articles.map((article) => ({
-    params: { slug: article.slug }
+
+  return posts.map((post) => ({
+    params: { slug: post.slug }
   }));
 }
 
 const { slug } = Astro.params;
 
-const article = await client.fetch(`
-  *[_type == "article" && slug.current == $slug][0] {
+const post = await client.fetch(`
+  *[_type == "blogPost" && slug.current == $slug][0] {
     title,
     description,
     author,
@@ -28,23 +28,21 @@ const article = await client.fetch(`
   }
 `, { slug });
 
-// Redirect if article not found
-if (!article) {
+if (!post) {
   return Astro.redirect('/404');
 }
 
-const imageUrl = article.image ? urlFor(article.image).url() : null;
+const imageUrl = post.image ? urlFor(post.image).url() : null;
 
 // Collect all footnotes from the body
 const footnotes = [];
 let footnoteNumber = 1;
 
-if (article.body && Array.isArray(article.body)) {
-  article.body.forEach(block => {
+if (post.body && Array.isArray(post.body)) {
+  post.body.forEach(block => {
     if (block._type === 'block' && block.markDefs) {
       block.markDefs.forEach(markDef => {
         if (markDef._type === 'footnote') {
-          // Check if we haven't already added this footnote
           if (!footnotes.find(fn => fn.key === markDef._key)) {
             footnotes.push({
               key: markDef._key,
@@ -61,11 +59,11 @@ if (article.body && Array.isArray(article.body)) {
 // Helper function to render text with marks
 function renderTextWithMarks(child, markDefs) {
   let text = child.text;
-  
+
   if (child.marks && child.marks.length > 0 && markDefs) {
     child.marks.forEach(markKey => {
       const markDef = markDefs.find(def => def._key === markKey);
-      
+
       if (markDef) {
         if (markDef._type === 'footnote') {
           const footnote = footnotes.find(fn => fn.key === markDef._key);
@@ -75,8 +73,7 @@ function renderTextWithMarks(child, markDefs) {
           text = `<a href="${markDef.href}" target="_blank" rel="noopener noreferrer">${text}</a>`;
         }
       }
-      
-      // Handle simple marks (strong, em, etc.)
+
       if (markKey === 'strong') {
         text = `<strong>${text}</strong>`;
       } else if (markKey === 'em') {
@@ -86,31 +83,28 @@ function renderTextWithMarks(child, markDefs) {
       }
     });
   }
-  
+
   return text;
 }
 ---
 
-<ArticlePost 
-  title={article.title}
-  description={article.description}
-  pubDate={new Date(article.pubDate)}
-  author={article.author}
+<ArticlePost
+  title={post.title}
+  description={post.description}
+  pubDate={new Date(post.pubDate)}
+  author={post.author}
   image={imageUrl}
 >
   <div class="article-content">
-    {article.body && Array.isArray(article.body) ? (
+    {post.body && Array.isArray(post.body) ? (
       <>
-        {article.body.map((block) => {
-          // Handle regular text blocks
+        {post.body.map((block) => {
           if (block._type === 'block' && block.children) {
             const style = block.style || 'normal';
-            
-            // Build the content with marks
             const content = block.children
               .map(child => renderTextWithMarks(child, block.markDefs))
               .join('');
-            
+
             if (style === 'h2') {
               return <h2 set:html={content} />;
             } else if (style === 'h3') {
@@ -123,8 +117,7 @@ function renderTextWithMarks(child, markDefs) {
               return <p set:html={content} />;
             }
           }
-          
-          // Handle images
+
           if (block._type === 'image') {
             const imgUrl = urlFor(block).url();
             return (
@@ -134,10 +127,10 @@ function renderTextWithMarks(child, markDefs) {
               </figure>
             );
           }
-          
+
           return null;
         })}
-        
+
         {footnotes.length > 0 && (
           <section class="footnotes">
             <h2>Notes</h2>
@@ -153,7 +146,7 @@ function renderTextWithMarks(child, markDefs) {
         )}
       </>
     ) : (
-      <p><em>No content available for this article.</em></p>
+      <p><em>No content available for this post.</em></p>
     )}
   </div>
 </ArticlePost>
@@ -163,12 +156,12 @@ function renderTextWithMarks(child, markDefs) {
     max-width: 65ch;
     margin: 0 auto;
   }
-  
+
   .article-content :global(p) {
     margin-bottom: 1.5rem;
     line-height: 1.75;
   }
-  
+
   .article-content :global(h2),
   .article-content :global(h3),
   .article-content :global(h4) {
@@ -176,32 +169,32 @@ function renderTextWithMarks(child, markDefs) {
     margin-top: 2rem;
     margin-bottom: 1rem;
   }
-  
+
   .article-content :global(h2) {
     font-size: 1.875rem;
   }
-  
+
   .article-content :global(h3) {
     font-size: 1.5rem;
   }
-  
+
   .article-content :global(blockquote) {
     border-left: 4px solid #c74a00;
     padding-left: 1.5em;
     margin: 2rem 0;
     font-style: italic;
   }
-  
+
   .article-content :global(figure) {
     margin: 2rem 0;
   }
-  
+
   .article-content :global(img) {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
   }
-  
+
   .article-content :global(figcaption) {
     margin-top: 0.5rem;
     font-size: 0.875rem;
@@ -209,35 +202,35 @@ function renderTextWithMarks(child, markDefs) {
     font-style: italic;
     text-align: center;
   }
-  
+
   .article-content :global(.footnote-ref) {
     text-decoration: none;
     color: #c74a00;
     font-weight: bold;
     margin-left: 0.125rem;
   }
-  
+
   .footnotes {
     margin-top: 3rem;
     padding-top: 2rem;
     border-top: 2px solid #e5e7eb;
   }
-  
+
   .footnotes h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     font-family: 'Caudex', Georgia, serif;
   }
-  
+
   .footnotes ol {
     font-size: 0.875rem;
     line-height: 1.6;
   }
-  
+
   .footnotes li {
     margin-bottom: 0.5rem;
   }
-  
+
   .footnotes :global(.footnote-back) {
     margin-left: 0.25rem;
     text-decoration: none;
