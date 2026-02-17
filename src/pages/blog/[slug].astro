@@ -1,6 +1,6 @@
 ---
-import { client, urlFor } from '../../../lib/sanity';
-import ArticlePost from '../../../layouts/ArticlePost.astro';
+import { client, urlFor } from '../../lib/sanity';
+import ArticlePost from '../../layouts/ArticlePost.astro';
 
 export async function getStaticPaths() {
   const posts = await client.fetch(`
